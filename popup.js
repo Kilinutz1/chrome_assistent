@@ -1,5 +1,4 @@
 
-
 const listeElement = document.getElementById('dateiListe');
 
 // Diese Funktion leert die Liste im HTML und baut sie neu auf
@@ -162,6 +161,7 @@ ${fileContent}
 Gib ausschließlich JSON zurück. ES ist wichtig dass 1 zu 1 NUR JSON zurückgegeben wird.
 Wenn du bei einer Antwort keine oder unzureichende Daten hast dann kannst du diesen Eintrag weglassen.
 Es soll am Ende JSON sein! Das Format ist stets der Index und dann was du in das Feld einfügen würdest
+Denk dran einheitlich in der Sprache zu antworten in der auch die Beschreibungen sind!!
 Format:
 {
   "0": "Antwort",
