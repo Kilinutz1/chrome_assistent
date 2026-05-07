@@ -23,7 +23,11 @@
     </style>
 </head>
 <body>
-
+    <button id="fillFormBtn" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">
+  Formular mit KI ausfüllen
+  </button>
+  <p id="statusMeldung" style="font-size: 11px; color: #666;"></p>  
+  <hr>
     <h3>Datei auswählen</h3>
     
     <!-- Der Dateiwähler -->
@@ -31,6 +35,8 @@
 
     <!-- Hier wird der Text später reingeschrieben -->
     <div id="ausgabe">Wähle eine .txt/.jpg/.pdf Datei...</div>
+    <hr>
+   
     <h3>Gespeicherte Dateien:</h3>
     <ul id="dateiListe" style="list-style: none; padding: 0;"></ul>
     <!-- Die Verbindung zur JS-Datei -->
