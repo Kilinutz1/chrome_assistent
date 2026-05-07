@@ -1,4 +1,3 @@
-API = ""
 
 
 const listeElement = document.getElementById('dateiListe');
@@ -169,12 +168,12 @@ Format:
   "1": "Antwort"
 }
 `;
-
+    console.log(prompt);
     // API-Key
     const API_KEY = API;
 
     // Gemini Endpoint
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`;
 
     // Anfrage an Gemini
     const response = await fetch(url, {
@@ -189,9 +188,13 @@ Format:
                         { text: prompt }
                     ]
                 }
-            ]
+            ],
+            generationConfig: {
+        responseMimeType: "application/json"}
         })
-    });
+        
+  }
+);
 
     if (!response.ok) {
         throw new Error("API Anfrage fehlgeschlagen");
