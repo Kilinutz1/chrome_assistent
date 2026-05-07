@@ -66,3 +66,36 @@ document.getElementById('fileInput').addEventListener('change', (event) => {
 
   reader.readAsText(file); // Liest die Datei als Text ein
 });
+
+
+
+document.getElementById('fillFormBtn').addEventListener('click', async () => {
+    // Update the status message so the user knows something is happening
+  const status = document.getElementById('statusMeldung');
+  status.innerText = "Sende Befehl an die Seite...";
+
+  try {
+    // 2. Find the tab that is currently open and active
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+    if (!tab) {
+      status.innerText = "Fehler: Kein aktiver Tab gefunden.";
+      return;
+    }
+
+    // 3. Send a message to the 'content.js' running on that tab
+    chrome.tabs.sendMessage(tab.id, { action: "FILL_FORM" }, (response) => {
+      
+      // Check if the message actually arrived
+      if (chrome.runtime.lastError) {
+        status.innerText = "Fehler: Seite bitte einmal neu laden!";
+        console.error(chrome.runtime.lastError.message);
+      } else {
+        status.innerText = "Erfolg! Felder wurden ausgefüllt.";
+      }
+    });
+  } catch (error) {
+    status.innerText = "Ein Fehler ist aufgetreten.";
+    console.error(error);
+  }
+});
