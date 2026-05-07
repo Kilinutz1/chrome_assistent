@@ -20,6 +20,11 @@
             white-space: pre-wrap; /* Behält Zeilenumbrüche bei */
             font-size: 9px;
         }
+        #apiKey {
+    width: 200px;
+    padding: 5px;
+    font-size: 12px;
+    }
     </style>
 </head>
 <body>
@@ -36,7 +41,9 @@
     <!-- Hier wird der Text später reingeschrieben -->
     <div id="ausgabe">Wähle bitte eine .txt Datei...</div>
     <hr>
-   
+    <label for="apiKey">API Key:</label>
+  <input type="password" id="apiKey" placeholder="Enter API key">
+   <hr>
     <h3>Gespeicherte Dateien:</h3>
     <ul id="dateiListe" style="list-style: none; padding: 0;"></ul>
     <!-- Die Verbindung zur JS-Datei -->
