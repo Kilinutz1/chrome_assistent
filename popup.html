@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+    <meta charset="UTF-8">
+    <title>Datei Reader</title>
     <style>
-      body { width: 150px; font-family: sans-serif; text-align: center; }
-      button { background: #4285f4; color: white; border: none; padding: 5px; cursor: pointer; }
+        /* Ein bisschen CSS, damit es nicht ganz so trocken aussieht */
+        body { 
+            width: 300px; 
+            font-family: sans-serif; 
+            padding: 15px; 
+        }
+        #ausgabe { 
+            margin-top: 10px; 
+            padding: 5px; 
+            background: #f4f4f4; 
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Behält Zeilenumbrüche bei */
+            font-size: 9px;
+        }
     </style>
-  </head>
-  <body>
-    <h3>Hello!</h3>
-    <button id="clickMe">Click Me</button>
+</head>
+<body>
+
+    <h3>Datei auswählen</h3>
+    
+    <!-- Der Dateiwähler -->
+    <input type="file" id="fileInput">
+
+    <!-- Hier wird der Text später reingeschrieben -->
+    <div id="ausgabe">Wähle eine .txt/.jpg/.pdf Datei...</div>
+    <h3>Gespeicherte Dateien:</h3>
+    <ul id="dateiListe" style="list-style: none; padding: 0;"></ul>
+    <!-- Die Verbindung zur JS-Datei -->
     <script src="popup.js"></script>
-  </body>
+
+</body>
 </html>

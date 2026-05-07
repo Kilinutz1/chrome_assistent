@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Hello Extension",
+  "name": "Chrome_assistent",
   "version": "1.0",
-  "description": "My first Chrome extension!",
+  "description": "CV",
   "action": {
     "default_popup": "popup.html"
   },
