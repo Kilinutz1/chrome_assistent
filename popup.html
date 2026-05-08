@@ -42,7 +42,11 @@
     <div id="ausgabe">Wähle bitte eine .txt Datei...</div>
     <hr>
     <label for="apiKey">API Key:</label>
-  <input type="password" id="apiKey" placeholder="Enter API key">
+    <div class="api-container">
+    <input type="password" id="apiKey" placeholder="Enter API key">
+    <button id="saveKeyBtn">Go</button>
+    <span id="keyStatus" style="margin-left: 5px; font-size: 16px; align-self: center;"></span>
+</div>
    <hr>
     <h3>Gespeicherte Dateien:</h3>
     <ul id="dateiListe" style="list-style: none; padding: 0;"></ul>

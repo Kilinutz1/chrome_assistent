@@ -1,12 +1,66 @@
 
 const listeElement = document.getElementById('dateiListe');
 
+document.getElementById('saveKeyBtn').addEventListener('click',  () => {
+    const key = document.getElementById('apiKey').value;
+    console.log("API Key wurde eingegeben:", key);
+    chrome.storage.local.set({ "API_KEY": key }, async() => {
+  if (chrome.runtime.lastError) {
+    console.error("Speicherfehler:", chrome.runtime.lastError.message);
+    alert("Fehler: Speicher voll oder Limit erreicht!");
+  } else {
+    console.log("Erfolgreich gespeichert!");
+
+    const status = document.getElementById("keyStatus");
+    status.textContent = "⏳";
+
+    try {
+        const testResponse = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                { text: "Hi" }
+                            ]
+                        }
+                    ]
+                })
+            }
+        );
+
+        if (testResponse.ok) {
+            status.textContent = "✅";
+            console.log("API Key funktioniert!");
+        } else {
+            status.textContent = "❌";
+            console.error("API Key ungültig!");
+        }
+
+    } catch (err) {
+        status.textContent = "❌";
+        console.error("Fehler beim Testen:", err);
+    }
+}
+})
+    // Hier Logik zum Speichern einfügen (z.B. chrome.storage oder localStorage)
+});
 // Diese Funktion leert die Liste im HTML und baut sie neu auf
 function updateListe() {
+
     chrome.storage.local.get(null, (alleDaten) => {
         listeElement.innerHTML = ""; // Erstmal alles löschen
-
+        
         Object.keys(alleDaten).forEach((name) => {
+            if (name =="API_KEY"){
+                document.getElementById('apiKey').value = alleDaten[name];
+            }
+            else{
             // Wir erstellen ein Listen-Element (li)
             const li = document.createElement('li');
             li.style.marginBottom = "5px";
@@ -37,6 +91,7 @@ function updateListe() {
             li.appendChild(span);
             li.appendChild(loeschBtn);
             listeElement.appendChild(li);
+        }
         });
     });
 }
@@ -170,7 +225,13 @@ Format:
 `;
     console.log(prompt);
     // API-Key
-    const API_KEY = API;
+    const result = await chrome.storage.local.get("API_KEY");
+    const API_KEY = result.API_KEY;
+    if (!API_KEY) {
+    throw new Error("Kein API-Key gespeichert!");
+    }
+    console.log(API_KEY);
+
 
     // Gemini Endpoint
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${API_KEY}`;
