@@ -213,15 +213,23 @@ ${JSON.stringify(formMap, null, 2)}
 BENUTZERDATEN:
 ${fileContent}
 
-Gib ausschließlich JSON zurück. ES ist wichtig dass 1 zu 1 NUR JSON zurückgegeben wird.
-Wenn du bei einer Antwort keine oder unzureichende Daten hast dann kannst du diesen Eintrag weglassen.
-Es soll am Ende JSON sein! Das Format ist stets der Index und dann was du in das Feld einfügen würdest
-Denk dran einheitlich in der Sprache zu antworten in der auch die Beschreibungen sind!!
+Es gelten für dich folgende unbrechbare Regeln:
+1. Gib ausschließlich NUR JSON zurück, ohne zusätzlichen Text. 
+Das Format muss so aussehen: 
 Format:
 {
   "0": "Antwort",
   "1": "Antwort"
 }
+Das Format ist stets der Index und dann was du in das Feld einfügen würdest
+
+
+2. Wenn du bei einer Antwort keine oder unzureichende Daten hast dann lässt du diesen Eintrag weg
+3. STRIKTE FILTER-REGEL: Bevor du ein Feld befüllst, prüfe label, id und placeholder. Wenn ALLE drei Werte Standardwerte wie 'no-label', 'no-id' oder 'no-placeholder' sind, darf dieser Index unter keinen Umständen im JSON-Output erscheinen. Ein leeres JSON {} ist die korrekte Antwort, wenn kein Feld spezifiziert ist.
+4. Antworte im richtigen Umfang. 
+5. Denk dran einheitlich in der Sprache zu antworten in der auch die Beschreibungen sind!!
+
+Beachte alle Regeln!
 `;
     console.log(prompt);
     // API-Key
@@ -230,7 +238,6 @@ Format:
     if (!API_KEY) {
     throw new Error("Kein API-Key gespeichert!");
     }
-    console.log(API_KEY);
 
 
     // Gemini Endpoint
@@ -268,7 +275,7 @@ Format:
 
     // Direkt das JSON aus Gemini holen
     const jsonText = data.candidates[0].content.parts[0].text;
-
+    console.log("JSON_Text:", jsonText);
     // JSON zurückgeben
     return JSON.parse(jsonText);
 }
