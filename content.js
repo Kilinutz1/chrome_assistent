@@ -39,7 +39,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       marker.style.color = "red";
       marker.style.fontWeight = "bold";
       marker.style.fontSize = "12px";
-      marker.className = "ai-marker"; // Class for easy removal later
+      marker.className = "ai-marker"; 
+      marker.style.opacity = "0";// Class for easy removal later
       
       // Insert it immediately after the input
       input.parentNode.insertBefore(marker, input.nextSibling);
