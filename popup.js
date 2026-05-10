@@ -160,7 +160,7 @@ document.getElementById('fillFormBtn').addEventListener('click', async () => {
             // 3. Prepare the data for Gemini
             // We combine the 'Form Map' and the 'File Content'
             const formMap = response.fields;
-           
+            const innerText = response.pageText;
 
             //const aiAnswers = formMap.reduce((acc, field) => ({ ...acc, [field.index]: `${field.index} hi` }), {});
             // Send it straight back to the content script
@@ -175,7 +175,7 @@ document.getElementById('fillFormBtn').addEventListener('click', async () => {
 
             try {
                 // 4. Call a function to talk to Gemini (We'll build this next)
-                const aiAnswers = await callGEMAPI(formMap, fileContent);
+                const aiAnswers = await callGEMAPI(formMap, fileContent, innerText);
 
                 // 5. Send the answers BACK to content.js to finally fill the form
                 chrome.tabs.sendMessage(tab.id, { 
@@ -201,7 +201,7 @@ document.getElementById('fillFormBtn').addEventListener('click', async () => {
 });
 
 
-async function callGEMAPI(formMap, fileContent) {
+async function callGEMAPI(formMap, fileContent, innerText) {
 
     // Dein Prompt für die KI
     const prompt = `
@@ -209,6 +209,9 @@ Du bist ein Assistent zum automatischen Ausfüllen von Formularen.
 
 FORMULARFELDER:
 ${JSON.stringify(formMap, null, 2)}
+
+FORMULARCONTEXT:
+${innerText}
 
 BENUTZERDATEN:
 ${fileContent}

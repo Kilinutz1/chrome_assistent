@@ -34,6 +34,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // We also send back a unique selector so we can find this EXACT box later
         name: input.name || ""
       });
+      const marker = document.createElement('span');
+      marker.innerText = ` [FIELD_ID:${i}] `;
+      marker.style.color = "red";
+      marker.style.fontWeight = "bold";
+      marker.style.fontSize = "12px";
+      marker.className = "ai-marker"; // Class for easy removal later
+      
+      // Insert it immediately after the input
+      input.parentNode.insertBefore(marker, input.nextSibling);
       input.setAttribute('data-ai-index', i);
       // Optional: Visual hint so you know which fields were scanned
       input.style.border = "2px solid #fff9c4";
@@ -42,7 +51,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   // --- 3. SENDING THE REPORT ---
   // We send the array back to popup.js via the sendResponse
-  sendResponse({ status: "success", fields: foundFields });
+  const visibleText = document.body.innerText;
+  document.querySelectorAll('.ai-marker').forEach(el => el.remove());
+  sendResponse({ status: "success", fields: foundFields, pageText:  visibleText});
     }
 
 
