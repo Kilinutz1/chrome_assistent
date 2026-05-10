@@ -231,6 +231,7 @@ Das Format ist stets der Index und dann was du in das Feld einfügen würdest
 3. STRIKTE FILTER-REGEL: Bevor du ein Feld befüllst, prüfe label, id und placeholder. Wenn ALLE drei Werte Standardwerte wie 'no-label', 'no-id' oder 'no-placeholder' sind, darf dieser Index unter keinen Umständen im JSON-Output erscheinen. Ein leeres JSON {} ist die korrekte Antwort, wenn kein Feld spezifiziert ist.
 4. Antworte im richtigen Umfang. 
 5. Denk dran einheitlich in der Sprache zu antworten in der auch die Beschreibungen sind!!
+6. wenn der Typ des Felds "checkbox" oder "radio" ist antworte strikt mit True oder False. Wenn du unsicher bist antworte mit False
 
 Beachte alle Regeln!
 `;

@@ -1,49 +1,74 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "FIND_FORM") {
-  const inputs = document.querySelectorAll('input[type="tel"], input[type="text"], input[type="email"], textarea');
+  const inputs = document.querySelectorAll('input[type="tel"], input[type="text"], input[type="email"],input[type="radio"], input[type="checkbox"], textarea,[role="radio"], [role="checkbox"]');
   
   // 1. Create an empty list to store our "Scout Report"
   const foundFields = [];
 
   inputs.forEach((input,i) => {
-    if (input.offsetParent !== null && !input.disabled && !input.readOnly) {
+    const tagName = input.tagName;
+    if (tagName!="TEXTAREA" && tagName!="INPUT"){
+      const isDisabled = input.getAttribute('aria-disabled') === 'true';
+      const isVisible = input.offsetParent !== null;
+      if (!isDisabled && isVisible){
+        foundFields.push({
+        index: i,
+        label: "no-label",
+        placeholder: "no-placeholder",
+        type: input.getAttribute('role'),
+        // We also send back a unique selector so we can find this EXACT box later
+      });
+      if (input.parentNode) {
+        const marker = document.createElement('span');
+        marker.innerText = ` [FIELD_ID:${i}] `;
+        marker.style.color = "red";
+        marker.style.fontWeight = "bold";
+        marker.style.fontSize = "12px";
+        marker.className = "ai-marker"; 
+        marker.style.opacity = "0";// Class for easy removal later
+        marker.style.position = "absolute";
+        
+        // Insert it immediately after the input
+        input.parentNode.insertBefore(marker, input.nextSibling);}
+      input.setAttribute('data-ai-index', i);
+      // Optional: Visual hint so you know which fields were scanned
+      input.style.border = "2px solid #fff9c4";
+      }
+    }
+
+
+
+
+
+
+
+    else if (input.offsetParent !== null && !input.disabled && !input.readOnly) {
       
       // --- CLUE GATHERING (Same as before) ---
-      const labelElement = document.querySelector(`label[for="${input.id}"]`) || input.closest('label');
+      const labelElement = input.id? document.querySelector(`label[for="${input.id}"]`):null || input.closest('label');
       const labelText = labelElement ? labelElement.innerText.trim() : "no-label";
       const placeholderText = input.placeholder || "no-placeholder";
-      
-      const parentContainer = input.closest('div, form, section');
-      let buttonText = "no-button";
-      if (parentContainer) {
-        const btn = parentContainer.querySelector('button, input[type="button"], input[type="submit"]');
-        if (btn) {
-          buttonText = btn.innerText || btn.value || "btn-no-text";
-        }
-      }
-      const idText = input.id || "no-id";
+            
 
-      // --- 2. PACKING THE DATA ---
-      // Instead of filling the box, we push an object into our list
       foundFields.push({
         index: i,
-        id: idText,
         label: labelText,
         placeholder: placeholderText,
-        context: buttonText.trim(),
+        type: input.type,
         // We also send back a unique selector so we can find this EXACT box later
-        name: input.name || ""
       });
-      const marker = document.createElement('span');
-      marker.innerText = ` [FIELD_ID:${i}] `;
-      marker.style.color = "red";
-      marker.style.fontWeight = "bold";
-      marker.style.fontSize = "12px";
-      marker.className = "ai-marker"; 
-      marker.style.opacity = "0";// Class for easy removal later
-      
-      // Insert it immediately after the input
-      input.parentNode.insertBefore(marker, input.nextSibling);
+      if (input.parentNode) {
+        const marker = document.createElement('span');
+        marker.innerText = ` [FIELD_ID:${i}] `;
+        marker.style.color = "red";
+        marker.style.fontWeight = "bold";
+        marker.style.fontSize = "12px";
+        marker.className = "ai-marker"; 
+        marker.style.opacity = "0";// Class for easy removal later
+        marker.style.position = "absolute";
+        
+        // Insert it immediately after the input
+        input.parentNode.insertBefore(marker, input.nextSibling);}
       input.setAttribute('data-ai-index', i);
       // Optional: Visual hint so you know which fields were scanned
       input.style.border = "2px solid #fff9c4";
@@ -67,14 +92,52 @@ if (request.action === "FILL_FINAL") {
   Object.keys(data).forEach((index) => {
     // We look for the EXACT element we "stamped" earlier
     const input = document.querySelector(`[data-ai-index="${index}"]`);
-    //LIST LIKE THIS {"0": "Max", "1": "test@mail.com"}
     if (input) {
       // 1. Fill the value provided by Gemini/Dummy
-      input.value = data[index];
+      const tagName = input.tagName;
+      if (tagName!="TEXTAREA" && tagName!="INPUT"){
+          const valueFromAI = data[index];
+          const shouldBeChecked = 
+          valueFromAI === true || 
+          valueFromAI === "true" || 
+          valueFromAI === "Yes" || 
+          valueFromAI === "True" ||
+          valueFromAI === "checked";
+        if (shouldBeChecked){
+          const z= input.getAttribute('aria-checked') === 'true';
+          if (!z){
+          input.click()
+          input.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+          input.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+          }
+        }
+
+      }
+      else{
+      if(input.type === "radio" || input.type === "checkbox") {
+        const valueFromAI = data[index];
+          const shouldBeChecked = 
+          valueFromAI === true || 
+          valueFromAI === "true" || 
+          valueFromAI === "Yes" || 
+          valueFromAI === "True" ||
+          valueFromAI === "checked";
+        if (shouldBeChecked){
+          input.checked = true
+          input.click()
+        }
+      }
+      else{
+        input.value = data[index];
+      }
+    
 
       // 2. Wake up the website's listeners
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+      const events = ['input', 'change', 'blur'];
+      events.forEach(eventType => {
+      input.dispatchEvent(new Event(eventType, { bubbles: true }));
+      });
+    }
 
       // 3. Visual "Success" feedback
       input.style.backgroundColor = "#c8e6c9"; 
